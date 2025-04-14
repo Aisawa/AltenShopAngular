@@ -1,98 +1,62 @@
-import {
-  Component,
-  computed,
-  EventEmitter,
-  input,
-  Output,
-  ViewEncapsulation,
-} from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { Product } from "app/products/data-access/product.model";
-import { SelectItem } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
-import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputNumberModule } from "primeng/inputnumber";
+import { InputTextareaModule } from "primeng/inputtextarea";
+import { CommonModule } from "@angular/common";
+import { Product } from "app/products/data-access/product.model";
 
 @Component({
   selector: "app-product-form",
-  template: `
-    <form #form="ngForm" (ngSubmit)="onSave()">
-      <div class="form-field">
-        <label for="name">Nom</label>
-        <input pInputText
-          type="text"
-          id="name"
-          name="name"
-          [(ngModel)]="editedProduct().name"
-          required>
-      </div>
-      <div class="form-field">
-        <label for="price">Prix</label>
-        <p-inputNumber 
-          [(ngModel)]="editedProduct().price" 
-          name="price"
-          mode="decimal"
-          required/> 
-      </div>
-      <div class="form-field">
-        <label for="description">Description</label>
-        <textarea pInputTextarea 
-          id="description"
-          name="description"
-          rows="5" 
-          cols="30" 
-          [(ngModel)]="editedProduct().description">
-        </textarea>
-      </div>      
-      <div class="form-field">
-        <label for="description">Catégorie</label>
-        <p-dropdown 
-          [options]="categories" 
-          [(ngModel)]="editedProduct().category" 
-          name="category"
-          appendTo="body"
-        />
-      </div>
-      <div class="flex justify-content-between">
-        <p-button type="button" (click)="onCancel()" label="Annuler" severity="help"/>
-        <p-button type="submit" [disabled]="!form.valid" label="Enregistrer" severity="success"/>
-      </div>
-    </form>
-  `,
-  styleUrls: ["./product-form.component.scss"],
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     ButtonModule,
     InputTextModule,
     InputNumberModule,
     InputTextareaModule,
-    DropdownModule,
   ],
-  encapsulation: ViewEncapsulation.None
+  templateUrl: "./product-form.component.html",
+  styleUrls: ["./product-form.component.scss"],
 })
 export class ProductFormComponent {
-  public readonly product = input.required<Product>();
-
-  @Output() cancel = new EventEmitter<void>();
-  @Output() save = new EventEmitter<Product>();
-
-  public readonly editedProduct = computed(() => ({ ...this.product() }));
-
-  public readonly categories: SelectItem[] = [
-    { value: "Accessories", label: "Accessories" },
-    { value: "Fitness", label: "Fitness" },
-    { value: "Clothing", label: "Clothing" },
-    { value: "Electronics", label: "Electronics" },
-  ];
-
-  onCancel() {
-    this.cancel.emit();
+  @Input() set product(value: Product | null) {
+    this.formData = value ? { ...value } : this.emptyProduct;
   }
 
-  onSave() {
-    this.save.emit(this.editedProduct());
+  @Output() save = new EventEmitter<Product>();
+  @Output() cancel = new EventEmitter<void>();
+
+  formData: Product = this.emptyProduct;
+
+  private get emptyProduct(): Product {
+    return {
+      id: 0,
+      name: "",
+      description: "",
+      price: 0,
+      category: "",
+      code: "",
+      image: "",
+      quantity: 0,
+      inventoryStatus: "INSTOCK",
+      internalReference: "",
+      shellId: 0,
+      rating: 0,
+      createdAt: 0,
+      updatedAt: 0,
+    };
+  }
+
+  submit() {
+    if (this.isFormValid()) {
+      this.save.emit(this.formData);
+    }
+  }
+
+  private isFormValid(): boolean {
+    return !!this.formData.name && this.formData.price >= 0;
   }
 }

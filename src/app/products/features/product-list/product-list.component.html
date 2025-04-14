@@ -2,12 +2,20 @@
 
 <p-button label="Créer produit" (onClick)="onCreate()" class="block text-center"/>
 
-<p-dataView #dv [value]="products()">
+<p-dataView [value]="products()">
     <ng-template pTemplate="list" let-products>
-        @for (product of products; track product) {
+        @for (product of products; track product.id) {
             <p-card class="block mb-2">
                 <span class="font-medium text-secondary text-sm">{{ product.category }}</span>
                 <div class="text-lg font-medium text-900 mt-2">{{ product.name }}</div>
+                
+                @if (product.description) {
+                    <p class="text-color-secondary mt-2">{{ product.description }}</p>
+                }
+                
+                <div class="text-primary font-bold mt-2">
+                    {{ product.price | currency:'EUR' }}
+                </div>
 
                 <ng-template pTemplate="footer">
                     <div class="flex gap-3 mt-1">
@@ -20,12 +28,10 @@
     </ng-template>
 </p-dataView>
 
-<p-dialog [(visible)]="isDialogVisible"
-    [style]="{ width: '50vw' }"
-    header="Ajout/Edition produit">
+<p-dialog [(visible)]="isDialogVisible" header="Gestion produit">
     <app-product-form
-        [product]="editedProduct()"
+        [product]="editedProduct"
         (save)="onSave($event)"
-        (cancel)="onCancel()"
+        (cancel)="isDialogVisible = false"
     />
 </p-dialog>
