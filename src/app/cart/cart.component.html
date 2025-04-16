@@ -19,7 +19,9 @@
     </ng-template>
     <ng-template pTemplate="footer">
         <tr>
-            <td colspan="3">
+            <td><strong>Total</strong></td>
+            <td>{{ cartTotal() | currency:'EUR' }}</td>
+            <td>
                 <p-button label="Vider le panier" severity="danger" (onClick)="clearCart()"></p-button>
             </td>
         </tr>

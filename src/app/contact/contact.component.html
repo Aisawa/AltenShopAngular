@@ -1,0 +1,60 @@
+<div class="contact-container">
+    <h2>Nous contacter</h2>
+    
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" *ngIf="!submitted; else successMessage">
+      <div class="p-field">
+        <label for="email">Email</label>
+        <input 
+          id="email" 
+          type="email" 
+          pInputText 
+          formControlName="email"
+          [ngClass]="{ 'ng-invalid ng-dirty': contactForm.get('email')?.invalid && contactForm.get('email')?.touched }">
+        
+        <small *ngIf="contactForm.get('email')?.errors?.['required'] && contactForm.get('email')?.touched" class="p-error">
+          L'email est obligatoire
+        </small>
+        <small *ngIf="contactForm.get('email')?.errors?.['email'] && contactForm.get('email')?.touched" class="p-error">
+          Veuillez entrer un email valide
+        </small>
+      </div>
+      
+      <div class="p-field">
+        <label for="message">Message</label>
+        <textarea 
+          id="message" 
+          pInputTextarea 
+          formControlName="message"
+          [ngClass]="{ 'ng-invalid ng-dirty': contactForm.get('message')?.invalid && contactForm.get('message')?.touched }"
+          rows="5"></textarea>
+        
+        <small *ngIf="contactForm.get('message')?.errors?.['required'] && contactForm.get('message')?.touched" class="p-error">
+          Le message est obligatoire
+        </small>
+        <small *ngIf="contactForm.get('message')?.errors?.['maxlength'] && contactForm.get('message')?.touched" class="p-error">
+          Le message ne doit pas dépasser 300 caractères
+        </small>
+        <small class="character-count">
+          {{ contactForm.get('message')?.value?.length || 0 }}/300
+        </small>
+      </div>
+      
+      <p-button 
+        type="submit" 
+        label="Envoyer" 
+        [disabled]="contactForm.invalid">
+      </p-button>
+    </form>
+    
+    <ng-template #successMessage>
+      <div class="success-message">
+        <p>Demande de contact envoyée avec succès</p>
+        <p-button 
+          label="Nouveau message" 
+          (onClick)="submitted = false">
+        </p-button>
+      </div>
+    </ng-template>
+  </div>
+  
+  <p-toast></p-toast>

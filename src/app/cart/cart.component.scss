@@ -1,0 +1,21 @@
+/* cart.component.scss */
+:host {
+    display: block;
+    padding: 1rem;
+  }
+  
+  p-table {
+    margin-top: 1rem;
+  }
+  
+  td:last-child {
+    text-align: right;
+  }
+  
+  td[colspan="3"] {
+    text-align: center;
+  }
+  
+  strong {
+    font-weight: 600;
+  }

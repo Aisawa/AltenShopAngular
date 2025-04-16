@@ -14,6 +14,7 @@ import { TableModule } from 'primeng/table';
 export class CartComponent {
   private cartService = inject(CartService);
   cartItems = this.cartService.items;
+  cartTotal = this.cartService.total;
 
   removeFromCart(productId: number) {
     this.cartService.removeFromCart(productId);

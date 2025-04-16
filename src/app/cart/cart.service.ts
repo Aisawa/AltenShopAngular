@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Product } from 'app/products/data-access/product.model';
 
 @Injectable({
@@ -21,5 +21,11 @@ export class CartService {
 
   clearCart() {
     this.cartItems.set([]);
+  }
+
+  get total() {
+    return computed(() => 
+      this.cartItems().reduce((sum, item) => sum + item.price, 0)
+    );
   }
 }
