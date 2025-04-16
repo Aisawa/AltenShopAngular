@@ -2,3 +2,22 @@
     overflow: hidden;
     height: 100%;
 }
+
+.p-button.p-button-icon-only {
+    position: relative;
+    
+    span {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+  }
