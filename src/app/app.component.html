@@ -6,7 +6,10 @@
         {{ title }}
     </div>
     <div class="p-toolbar-group-end">
-        <i class="pi pi-shopping-cart" style="font-size: 2rem"></i>
+        <p-button icon="pi pi-shopping-cart" [style]="{ 'font-size': '2rem' }" 
+        routerLink="/cart" [text]="true" [rounded]="true">
+        <span class="ml-2">{{ cartItemCount() }}</span>
+    </p-button>
     </div>
 </p-toolbar>
 <p-splitter 
