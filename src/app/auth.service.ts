@@ -115,14 +115,19 @@ export class AuthService {
     }
   }
 
+// isAdmin(): boolean {
+//   //if (!this.isAuthenticated()) return false;
+  
+//   // Solution 1: Comparaison case-sensitive
+//   // return this.currentUserValue?.email === 'admin@admin.com';
+  
+//   // Solution 2: Comparaison case-insensitive (plus robuste)
+//   //return this.currentUserValue?.email?.toLowerCase() === 'admin@admin.com';
+//   return true; // Pour le test, on retourne true pour simuler un admin
+// }
+
 isAdmin(): boolean {
-  //if (!this.isAuthenticated()) return false;
-  
-  // Solution 1: Comparaison case-sensitive
-  // return this.currentUserValue?.email === 'admin@admin.com';
-  
-  // Solution 2: Comparaison case-insensitive (plus robuste)
-  //return this.currentUserValue?.email?.toLowerCase() === 'admin@admin.com';
-  return true; // Pour le test, on retourne true pour simuler un admin
+  // return true; // Simulation permanente
+  return environment.mockAdmin; // Mieux : contrôlé par l'environnement
 }
 }

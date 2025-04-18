@@ -5,10 +5,12 @@ import { InputTextModule } from "primeng/inputtext";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { CommonModule } from "@angular/common";
-import { Product } from "app/products/data-access/product.model";
+import { ProductsService } from "app/products/data-access/products.service";
+import { MessageService } from "primeng/api";
+import { createEmptyProduct, ProductDB } from "app/products/data-access/productDB.model";
 
 @Component({
-  selector: "app-product-form",
+  selector: 'app-product-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -16,43 +18,53 @@ import { Product } from "app/products/data-access/product.model";
     ButtonModule,
     InputTextModule,
     InputNumberModule,
-    InputTextareaModule,
+    InputTextareaModule
   ],
-  templateUrl: "./product-form.component.html",
-  styleUrls: ["./product-form.component.scss"],
+  templateUrl: './product-form.component.html',
+  styleUrls: ['./product-form.component.scss']
 })
 export class ProductFormComponent {
-  @Input() set product(value: Product | null) {
-    this.formData = value ? { ...value } : this.emptyProduct;
+  @Input() set product(value: ProductDB | null) {
+    this.formData = value ? { ...value } : createEmptyProduct();
   }
 
-  @Output() save = new EventEmitter<Product>();
+  @Output() save = new EventEmitter<ProductDB>();
   @Output() cancel = new EventEmitter<void>();
 
-  formData: Product = this.emptyProduct;
+  formData: ProductDB = createEmptyProduct();
+  loading = false;
 
-  private get emptyProduct(): Product {
-    return {
-      id: 0,
-      name: "",
-      description: "",
-      price: 0,
-      category: "",
-      code: "",
-      image: "",
-      quantity: 0,
-      inventoryStatus: "INSTOCK",
-      internalReference: "",
-      shellId: 0,
-      rating: 0,
-      createdAt: 0,
-      updatedAt: 0,
-    };
-  }
+  constructor(
+    private productsService: ProductsService,
+    private messageService: MessageService
+  ) {}
 
   submit() {
     if (this.isFormValid()) {
-      this.save.emit(this.formData);
+      this.loading = true;
+      
+      console.log('Submitting product:', this.formData);
+  
+      this.productsService.create(this.formData).subscribe({
+        next: (createdProduct: ProductDB) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Produit créé avec succès'
+          });
+          this.save.emit(createdProduct);
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Create product error:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: err.error?.message || 'Erreur lors de la création du produit'
+          });
+          this.loading = false;
+        }
+      });
     }
   }
 

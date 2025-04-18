@@ -1,10 +1,11 @@
 import { Injectable, inject, signal } from "@angular/core";
 import { ApiResponse, Product } from "./product.model";
-import { HttpClient } from "@angular/common/http";
-import { catchError, map, Observable, of, tap } from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { catchError, map, Observable, of, tap, throwError } from "rxjs";
 import { environment } from "environments/environment";
 import { AuthService } from "app/auth.service";
 import { Router } from "@angular/router";
+import { ProductDB } from "./productDB.model";
 
 @Injectable({
   providedIn: "root",
@@ -29,6 +30,17 @@ export class ProductsService {
   //     })
   //   );
   // }
+
+  private getAuthHeaders(): HttpHeaders {
+    let headers = new HttpHeaders();
+    console.log('mockAdmin:', environment.mockAdmin);
+    if (!environment.mockAdmin && this.authService.token) {
+      headers = headers.set('Authorization', `Bearer ${this.authService.token}`);
+    }
+    
+    return headers;
+  }
+
   public get(): Observable<Product[]> {
     return this.http.get<ApiResponse<Product[]>>(this.baseUrl).pipe(
       map((response: ApiResponse<Product[]>) => response.data || []),
@@ -43,15 +55,25 @@ export class ProductsService {
     );
   }
 
-  public create(product: Omit<Product, "id">): Observable<Product | null> {
-    return this.http.post<ApiResponse<Product>>(this.baseUrl, product).pipe(
-      map((response) => response.data || null),
-      tap((newProduct) => {
-        if (newProduct) {
-          this._products.update((products) => [newProduct, ...products]);
+  public create(product: Omit<ProductDB, "id">): Observable<ProductDB> {  
+    return this.http.post<ApiResponse<ProductDB>>(this.baseUrl, product, { headers: this.getAuthHeaders() }).pipe(
+      map((response) => {
+        if (!response.data) {
+          throw new Error('No product data in response');
         }
+        return response.data;
       }),
-      catchError((error) => this.handleError("create", error, null))
+      tap((newProduct) => {
+        this._products.update((products) => [newProduct, ...products]);
+      }),
+      catchError((error) => {
+        console.error('Error creating product:', error);
+        if (error.status === 401) {
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        }
+        throw error; // Propage l'erreur au lieu de retourner null
+      })
     );
   }
 

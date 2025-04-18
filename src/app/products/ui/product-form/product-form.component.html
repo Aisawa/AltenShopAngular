@@ -1,58 +1,59 @@
-<!-- src/app/products/ui/product-form/product-form.component.html -->
 <form #form="ngForm" (ngSubmit)="submit()">
-    <div class="flex flex-col gap-3">
-      <!-- Nom -->
-      <div class="field">
-        <label for="name" class="block">Nom</label>
-        <input pInputText id="name" [(ngModel)]="formData.name" name="name" required>
-      </div>
-  
-      <!-- Prix -->
-      <div class="field">
-        <label for="price" class="block">Prix</label>
-        <p-inputNumber 
-          id="price" 
-          [(ngModel)]="formData.price" 
-          name="price"
-          mode="currency" 
-          currency="EUR" 
-          [min]="0"
-          required>
-        </p-inputNumber>
-      </div>
-  
-      <!-- Catégorie -->
-      <div class="field">
-        <label for="category" class="block">Catégorie</label>
-        <input pInputText id="category" [(ngModel)]="formData.category" name="category">
-      </div>
-  
-      <!-- Description -->
-      <div class="field">
-        <label for="description" class="block">Description</label>
-        <textarea 
-          pInputTextarea 
-          id="description" 
-          [(ngModel)]="formData.description" 
-          name="description" 
-          rows="5">
-        </textarea>
-      </div>
-  
-      <!-- Boutons -->
-      <div class="flex justify-end gap-2 mt-3">
-        <p-button 
-          label="Annuler" 
-          severity="secondary" 
-          type="button"
-          (click)="cancel.emit()">
-        </p-button>
-        
-        <p-button 
-          label="Enregistrer" 
-          type="submit"
-          [disabled]="!form.valid">
-        </p-button>
-      </div>
+  <div class="flex flex-col gap-3">
+    <!-- Nom -->
+    <div class="field">
+      <label for="name" class="block">Nom</label>
+      <input pInputText id="name" [(ngModel)]="formData.name" name="name" required>
     </div>
-  </form>
+
+    <!-- Prix -->
+    <div class="field">
+      <label for="price" class="block">Prix</label>
+      <p-inputNumber 
+        id="price" 
+        [(ngModel)]="formData.price" 
+        name="price"
+        mode="currency" 
+        currency="EUR" 
+        [min]="0"
+        required>
+      </p-inputNumber>
+    </div>
+
+    <!-- Catégorie -->
+    <div class="field">
+      <label for="category" class="block">Catégorie</label>
+      <input pInputText id="category" [(ngModel)]="formData.category" name="category">
+    </div>
+
+    <!-- Description -->
+    <div class="field">
+      <label for="description" class="block">Description</label>
+      <textarea 
+        pInputTextarea 
+        id="description" 
+        [(ngModel)]="formData.description" 
+        name="description" 
+        rows="5">
+      </textarea>
+    </div>
+
+    <!-- Boutons -->
+    <div class="flex justify-end gap-2 mt-3">
+      <p-button 
+        label="Annuler" 
+        severity="secondary" 
+        type="button"
+        (click)="cancel.emit()"
+        [disabled]="loading">
+      </p-button>
+      
+      <p-button 
+        label="Enregistrer" 
+        type="submit"
+        [disabled]="!form.valid || loading"
+        [loading]="loading">
+      </p-button>
+    </div>
+  </div>
+</form>
