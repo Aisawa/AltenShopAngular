@@ -1,0 +1,47 @@
+<div class="login-container">
+    <h2>Connexion</h2>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="p-field">
+        <label for="email">Email</label>
+        <input 
+          id="email" 
+          type="email" 
+          pInputText 
+          formControlName="email"
+          [ngClass]="{ 'ng-invalid ng-dirty': loginForm.get('email')?.invalid && loginForm.get('email')?.touched }">
+        
+        <small *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched" class="p-error">
+          L'email est obligatoire
+        </small>
+        <small *ngIf="loginForm.get('email')?.errors?.['email'] && loginForm.get('email')?.touched" class="p-error">
+          Veuillez entrer un email valide
+        </small>
+      </div>
+      
+      <div class="p-field">
+        <label for="password">Mot de passe</label>
+        <input 
+          id="password" 
+          type="password" 
+          pInputText 
+          formControlName="password"
+          [ngClass]="{ 'ng-invalid ng-dirty': loginForm.get('password')?.invalid && loginForm.get('password')?.touched }">
+        
+        <small *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched" class="p-error">
+          Le mot de passe est obligatoire
+        </small>
+      </div>
+      
+      <p-button 
+        type="submit" 
+        label="Se connecter" 
+        [disabled]="loginForm.invalid || loading"
+        [loading]="loading">
+      </p-button>
+      
+      <div class="register-link">
+        Pas encore de compte ? <a routerLink="/register">S'inscrire</a>
+      </div>
+    </form>
+  </div>

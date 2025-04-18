@@ -11,6 +11,24 @@
         <span class="ml-2">{{ cartItemCount() }}</span>
     </p-button>
     </div>
+    <div class="p-toolbar-group-end">
+        @if (authService.currentUserValue) {
+          <span class="mr-3">{{ authService.currentUserValue.username }}</span>
+          <p-button 
+            icon="pi pi-sign-out" 
+            severity="danger" 
+            (onClick)="authService.logout()"
+            tooltip="Déconnexion">
+          </p-button>
+        } @else {
+          <p-button 
+            icon="pi pi-sign-in" 
+            severity="success" 
+            routerLink="/login"
+            tooltip="Connexion">
+          </p-button>
+        }
+      </div>
 </p-toolbar>
 <p-splitter 
     [panelSizes]="[20, 80]" 

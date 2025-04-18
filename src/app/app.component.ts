@@ -6,6 +6,7 @@ import { PanelMenuComponent } from "./shared/ui/panel-menu/panel-menu.component"
 import { CartService } from "./cart/cart.service";
 import { CommonModule } from "@angular/common";
 import { ButtonModule } from "primeng/button";
+import { AuthService } from "./auth.service";
 
 @Component({
   selector: "app-root",
@@ -17,6 +18,7 @@ import { ButtonModule } from "primeng/button";
 export class AppComponent {
   title = "ALTEN SHOP";
   private cartService = inject(CartService);
+  authService = inject(AuthService);
   
   cartItemCount = computed(() => this.cartService.items().length);
 }

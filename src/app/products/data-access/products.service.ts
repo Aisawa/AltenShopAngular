@@ -3,6 +3,8 @@ import { ApiResponse, Product } from "./product.model";
 import { HttpClient } from "@angular/common/http";
 import { catchError, map, Observable, of, tap } from "rxjs";
 import { environment } from "environments/environment";
+import { AuthService } from "app/auth.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
@@ -11,16 +13,31 @@ export class ProductsService {
   private readonly http = inject(HttpClient);
   private readonly path = "/api/products";
   private readonly baseUrl = `${environment.apiUrl}/products`;
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   private readonly _products = signal<Product[]>([]);
 
   public readonly products = this._products.asReadonly();
 
+  // public get(): Observable<Product[]> {
+  //   return this.http.get<ApiResponse<Product[]>>(this.baseUrl).pipe(
+  //     map((response: ApiResponse<Product[]>) => response.data || []),
+  //     tap((products: Product[]) => this._products.set(products)),
+  //     catchError((error): Observable<Product[]> => {
+  //       return this.handleError<Product[]>("fetch", error, []);
+  //     })
+  //   );
+  // }
   public get(): Observable<Product[]> {
     return this.http.get<ApiResponse<Product[]>>(this.baseUrl).pipe(
       map((response: ApiResponse<Product[]>) => response.data || []),
       tap((products: Product[]) => this._products.set(products)),
       catchError((error): Observable<Product[]> => {
+        if (error.status === 401) {
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        }
         return this.handleError<Product[]>("fetch", error, []);
       })
     );

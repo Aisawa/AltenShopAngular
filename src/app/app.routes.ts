@@ -1,10 +1,11 @@
 import { Routes } from "@angular/router";
 import { HomeComponent } from "./shared/features/home/home.component";
 import { CartComponent } from "./cart/cart.component";
-<<<<<<< HEAD
 import { ContactComponent } from "./contact/contact.component";
-=======
->>>>>>> d1bec52109e9a4e212fcc4cd6aa49c479235343c
+import { LoginComponent } from "./login/login.component";
+import { RegisterComponent } from "./register/register.component";
+import { authGuard } from "./guards/auth.guard";
+import { adminGuard } from "./guards/admin.guard";
 
 export const APP_ROUTES: Routes = [
   {
@@ -17,9 +18,13 @@ export const APP_ROUTES: Routes = [
       import("./products/products.routes").then((m) => m.PRODUCTS_ROUTES)
   },
   { path: 'cart', component: CartComponent },
-<<<<<<< HEAD
   { path: 'contact', component: ContactComponent },
-=======
->>>>>>> d1bec52109e9a4e212fcc4cd6aa49c479235343c
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  // {
+  //   path: 'products/create',
+  //   component: ProductFormComponent, // ou la route appropriée
+  //   canActivate: [authGuard, adminGuard]
+  // },
   { path: "", redirectTo: "home", pathMatch: "full" },
 ];

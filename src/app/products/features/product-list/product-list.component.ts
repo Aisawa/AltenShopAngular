@@ -1,5 +1,6 @@
 import { AsyncPipe, CommonModule, CurrencyPipe } from "@angular/common";
 import { Component, OnInit, inject, signal } from "@angular/core";
+import { AuthService } from "app/auth.service";
 import { CartService } from "app/cart/cart.service";
 import { Product } from "app/products/data-access/product.model";
 import { ProductsService } from "app/products/data-access/products.service";
@@ -45,6 +46,7 @@ const emptyProduct: Product = {
 export class ProductListComponent implements OnInit {
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
 
   public readonly products = this.productsService.products;
 
@@ -95,5 +97,11 @@ export class ProductListComponent implements OnInit {
 
   public addToCart(product: Product) {
     this.cartService.addToCart(product);
+  }
+
+  get isAdmin(): boolean {
+    const isAdmin = this.authService.isAdmin();
+    console.log('Is admin?', isAdmin, 'User email:', this.authService.currentUserValue?.email);
+    return isAdmin;
   }
 }
