@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -12,7 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [CommonModule, ButtonModule, FormsModule, ReactiveFormsModule,InputTextModule ],
+  imports: [CommonModule, ButtonModule, FormsModule, ReactiveFormsModule,InputTextModule,RouterModule],
 })
 export class LoginComponent {
   loginForm: FormGroup;

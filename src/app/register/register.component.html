@@ -1,1 +1,78 @@
-<p>register works!</p>
+<div class="register-container">
+    <h2>Créer un compte</h2>
+    
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="p-field">
+        <label for="username">Nom d'utilisateur</label>
+        <input 
+          id="username" 
+          type="text" 
+          pInputText 
+          formControlName="username"
+          [ngClass]="{ 'ng-invalid ng-dirty': registerForm.get('username')?.invalid && registerForm.get('username')?.touched }">
+        
+        <small *ngIf="registerForm.get('username')?.errors?.['required'] && registerForm.get('username')?.touched" class="p-error">
+          Le nom d'utilisateur est obligatoire
+        </small>
+      </div>
+      
+      <div class="p-field">
+        <label for="firstname">Prénom</label>
+        <input 
+          id="firstname" 
+          type="text" 
+          pInputText 
+          formControlName="firstname"
+          [ngClass]="{ 'ng-invalid ng-dirty': registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched }">
+        
+        <small *ngIf="registerForm.get('firstname')?.errors?.['required'] && registerForm.get('firstname')?.touched" class="p-error">
+          Le prénom est obligatoire
+        </small>
+      </div>
+      
+      <div class="p-field">
+        <label for="email">Email</label>
+        <input 
+          id="email" 
+          type="email" 
+          pInputText 
+          formControlName="email"
+          [ngClass]="{ 'ng-invalid ng-dirty': registerForm.get('email')?.invalid && registerForm.get('email')?.touched }">
+        
+        <small *ngIf="registerForm.get('email')?.errors?.['required'] && registerForm.get('email')?.touched" class="p-error">
+          L'email est obligatoire
+        </small>
+        <small *ngIf="registerForm.get('email')?.errors?.['email'] && registerForm.get('email')?.touched" class="p-error">
+          Veuillez entrer un email valide
+        </small>
+      </div>
+      
+      <div class="p-field">
+        <label for="password">Mot de passe</label>
+        <input 
+          id="password" 
+          type="password" 
+          pInputText 
+          formControlName="password"
+          [ngClass]="{ 'ng-invalid ng-dirty': registerForm.get('password')?.invalid && registerForm.get('password')?.touched }">
+        
+        <small *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched" class="p-error">
+          Le mot de passe est obligatoire
+        </small>
+        <small *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched" class="p-error">
+          Le mot de passe doit contenir au moins 6 caractères
+        </small>
+      </div>
+      
+      <p-button 
+        type="submit" 
+        label="S'inscrire" 
+        [disabled]="registerForm.invalid || loading"
+        [loading]="loading">
+      </p-button>
+      
+      <div class="login-link">
+        Déjà un compte ? <a routerLink="/login">Se connecter</a>
+      </div>
+    </form>
+  </div>
