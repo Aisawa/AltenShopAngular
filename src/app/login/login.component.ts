@@ -36,12 +36,17 @@ export class LoginComponent {
       const { email, password } = this.loginForm.value;
       
       this.authService.login(email, password).subscribe({
-        next: () => {
-          this.router.navigate(['/']);
+        next: (response) => {
+          this.loading = false;
           this.messageService.add({
             severity: 'success',
             summary: 'Connexion réussie',
             detail: 'Vous êtes maintenant connecté'
+          });
+          this.router.navigate(['/']).then(navSuccess => {
+            if (!navSuccess) {
+              console.error('Navigation failed');
+            }
           });
         },
         error: (err) => {
@@ -51,6 +56,9 @@ export class LoginComponent {
             summary: 'Erreur de connexion',
             detail: err.error?.message || 'Email ou mot de passe incorrect'
           });
+        },
+        complete: () => {
+          this.loading = false;
         }
       });
     }

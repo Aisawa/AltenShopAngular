@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap } from 'rxjs';
 import { environment } from '../environments/environment';
 import { Router } from '@angular/router';
+import { ApiResponse } from './products/data-access/product.model';
 
 interface LoginResponse {
   token: string;
@@ -22,7 +23,7 @@ interface UserProfile {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private apiUrl = `${environment.apiUrl}`;
   private currentUserSubject = new BehaviorSubject<UserProfile | null>(null);
 
   constructor(private http: HttpClient, private router: Router) {
@@ -45,15 +46,21 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/token`, { email, password }).pipe(
+    return this.http.post<ApiResponse<LoginResponse>>(`${this.apiUrl}/token`, { email, password }).pipe(
+      map(response => {
+        if (!response.success || !response.data) {
+          throw new Error(response.message || 'Invalid login response');
+        }
+        return response.data;
+      }),
       tap(response => {
         if (!response.token || !response.expiration) {
-          throw new Error('Invalid login response');
+          throw new Error('Invalid token data');
         }
         
         const userProfile: UserProfile = {
           username: response.username,
-          email: email,
+          email: response.email,
           token: response.token,
           tokenExpiration: new Date(response.expiration)
         };
@@ -63,6 +70,8 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('Login error:', error);
+        this.currentUserSubject.next(null);
+        localStorage.removeItem('currentUser');
         throw error;
       })
     );
