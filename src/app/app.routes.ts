@@ -25,7 +25,7 @@ export const APP_ROUTES: Routes = [
   {
     path: 'products/create',
     component: ProductFormComponent,
-    canActivate: [AdminGuard] //authGuard
+    canActivate: [AdminGuard, authGuard]
   },
   { path: "", redirectTo: "home", pathMatch: "full" },
 ];
