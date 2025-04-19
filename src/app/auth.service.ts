@@ -44,22 +44,6 @@ export class AuthService {
     return this.currentUserValue?.token || null;
   }
 
-  // login(email: string, password: string): Observable<LoginResponse> {
-  //   return this.http.post<LoginResponse>(`${this.apiUrl}/token`, { email, password }).pipe(
-  //     tap(response => {
-  //       console.log('Login response:', response); // Ajoutez ce log
-  //       const userProfile: UserProfile = {
-  //         username: response.username,
-  //         email: email,
-  //         token: response.token,
-  //         tokenExpiration: new Date(response.expiration)
-  //       };
-  //       console.log('Storing user:', userProfile); // Ajoutez ce log
-  //       localStorage.setItem('currentUser', JSON.stringify(userProfile));
-  //       this.currentUserSubject.next(userProfile);
-  //     })
-  //   );
-  // }
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/token`, { email, password }).pipe(
       tap(response => {
@@ -69,7 +53,7 @@ export class AuthService {
         
         const userProfile: UserProfile = {
           username: response.username,
-          email: email, // Utilisez l'email de la requête si non fourni
+          email: email,
           token: response.token,
           tokenExpiration: new Date(response.expiration)
         };
@@ -96,7 +80,7 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const user = this.currentUserValue;
-    console.log('Current user:', user); // Ajoutez ce log
+    console.log('Current user:', user);
     if (!user || !user.token) return false;
     
     // Vérifier si le token est expiré
@@ -107,7 +91,7 @@ export class AuthService {
     try {
       const payload = token.split('.')[1];
       const decoded = atob(payload);
-      console.log('Decoded token payload:', decoded); // Ajoutez ce log
+      console.log('Decoded token payload:', decoded);
       return JSON.parse(decoded);
     } catch (e) {
       console.error('Error decoding token:', e);

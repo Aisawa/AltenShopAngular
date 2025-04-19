@@ -17,12 +17,4 @@ describe('LoginComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
 });
-function expect(component: LoginComponent) {
-  throw new Error('Function not implemented.');
-}
-

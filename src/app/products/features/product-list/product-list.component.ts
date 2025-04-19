@@ -13,23 +13,6 @@ import { DataViewModule } from "primeng/dataview";
 import { DialogModule } from "primeng/dialog";
 import { ToastModule } from "primeng/toast";
 
-const emptyProduct: Product = {
-  id: 0,
-  code: "",
-  name: "",
-  description: "",
-  image: "",
-  category: "",
-  price: 0,
-  quantity: 0,
-  internalReference: "",
-  shellId: 0,
-  inventoryStatus: "INSTOCK",
-  rating: 0,
-  createdAt: 0,
-  updatedAt: 0,
-};
-
 @Component({
   selector: "app-product-list",
   templateUrl: "./product-list.component.html",
@@ -51,12 +34,10 @@ export class ProductListComponent implements OnInit {
   private readonly productsService = inject(ProductsService);
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
-
   public readonly products = this.productsService.products;
 
   public isDialogVisible = false;
   public isCreation = false;
-  //public readonly editedProduct = signal<Product>(emptyProduct);
   editedProduct: ProductDB | null = null;
 
   constructor(
@@ -118,7 +99,7 @@ export class ProductListComponent implements OnInit {
 
   get isAdmin(): boolean {
     const isAdmin = this.authService.isAdmin();
-    console.log('Is admin?', isAdmin, 'User email:', this.authService.currentUserValue?.email);
+    //console.log('Is admin?', isAdmin, 'User email:', this.authService.currentUserValue?.email);
     return isAdmin;
   }
 

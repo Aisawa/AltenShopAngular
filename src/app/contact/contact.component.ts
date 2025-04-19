@@ -1,4 +1,3 @@
-// contact.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -39,7 +38,6 @@ export class ContactComponent {
 
   onSubmit() {
     if (this.contactForm.valid) {
-      // Ici vous pourriez ajouter un appel HTTP à votre backend
       console.log('Formulaire envoyé', this.contactForm.value);
       
       this.submitted = true;
@@ -49,7 +47,7 @@ export class ContactComponent {
         detail: 'Demande de contact envoyée avec succès'
       });
       
-      // Réinitialiser le formulaire après 2 secondes
+      // On réinitialise le formulaire après 2 secondes
       setTimeout(() => {
         this.contactForm.reset();
         this.submitted = false;

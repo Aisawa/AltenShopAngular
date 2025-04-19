@@ -12,24 +12,11 @@ import { ProductDB } from "./productDB.model";
 })
 export class ProductsService {
   private readonly http = inject(HttpClient);
-  private readonly path = "/api/products";
   private readonly baseUrl = `${environment.apiUrl}/products`;
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-
   private readonly _products = signal<ProductDB[]>([]);
-
   public readonly products = this._products.asReadonly();
-
-  // public get(): Observable<Product[]> {
-  //   return this.http.get<ApiResponse<Product[]>>(this.baseUrl).pipe(
-  //     map((response: ApiResponse<Product[]>) => response.data || []),
-  //     tap((products: Product[]) => this._products.set(products)),
-  //     catchError((error): Observable<Product[]> => {
-  //       return this.handleError<Product[]>("fetch", error, []);
-  //     })
-  //   );
-  // }
 
   private getAuthHeaders(): HttpHeaders {
     let headers = new HttpHeaders();
@@ -72,7 +59,7 @@ export class ProductsService {
           this.authService.logout();
           this.router.navigate(['/login']);
         }
-        throw error; // Propage l'erreur au lieu de retourner null
+        throw error; // On propage l'erreur au lieu de retourner null
       })
     );
   }
@@ -134,7 +121,7 @@ export class ProductsService {
     fallback: T
   ): Observable<T> {
     console.error(`Product ${operation} error:`, error);
-    // Vous pourriez ajouter ici un service de notification/toast
+
     return of(fallback);
   }
 }
