@@ -3,6 +3,7 @@ import { Component, OnInit, inject, signal } from "@angular/core";
 import { AuthService } from "app/auth.service";
 import { CartService } from "app/cart/cart.service";
 import { Product } from "app/products/data-access/product.model";
+import { ProductDB } from "app/products/data-access/productDB.model";
 import { ProductsService } from "app/products/data-access/products.service";
 import { ProductFormComponent } from "app/products/ui/product-form/product-form.component";
 import { ButtonModule } from "primeng/button";
@@ -53,7 +54,7 @@ export class ProductListComponent implements OnInit {
   public isDialogVisible = false;
   public isCreation = false;
   //public readonly editedProduct = signal<Product>(emptyProduct);
-  editedProduct: Product | null = null;
+  editedProduct: ProductDB | null = null;
 
   ngOnInit() {
     this.loadProducts();
@@ -68,16 +69,16 @@ export class ProductListComponent implements OnInit {
     this.isDialogVisible = true;
   }
 
-  public onUpdate(product: Product) {
+  public onUpdate(product: ProductDB) {
     this.editedProduct = product;
     this.isDialogVisible = true;
   }
 
-  public onDelete(product: Product) {
+  public onDelete(product: ProductDB) {
     this.productsService.delete(product.id).subscribe();
   }
 
-  public onSave(product: Product) {
+  public onSave(product: ProductDB) {
     const operation = product.id
       ? this.productsService.update(product)
       : this.productsService.create(product);

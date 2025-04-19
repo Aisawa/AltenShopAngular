@@ -17,7 +17,7 @@ export class ProductsService {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  private readonly _products = signal<Product[]>([]);
+  private readonly _products = signal<ProductDB[]>([]);
 
   public readonly products = this._products.asReadonly();
 
@@ -77,21 +77,31 @@ export class ProductsService {
     );
   }
 
-  public update(product: Product): Observable<Product | null> {
+  public update(product: ProductDB): Observable<ProductDB> {
     return this.http
-      .patch<ApiResponse<Product>>(`${this.baseUrl}/${product.id}`, product)
+      .put<ApiResponse<ProductDB>>(`${this.baseUrl}/${product.id}`, product, { headers: this.getAuthHeaders() })
       .pipe(
-        map((response) => response.data || null),
-        tap((updatedProduct) => {
-          if (updatedProduct) {
-            this._products.update((products) =>
-              products.map((p) =>
-                p.id === updatedProduct.id ? updatedProduct : p
-              )
-            );
+        map((response) => {
+          if (!response.data) {
+            throw new Error('No product data in response');
           }
+          return response.data;
         }),
-        catchError((error) => this.handleError("update", error, null))
+        tap((updatedProduct) => {
+          this._products.update((products) =>
+            products.map((p) =>
+              p.id === updatedProduct.id ? updatedProduct : p
+            )
+          );
+        }),
+        catchError((error) => {
+          console.error('Error updating product:', error);
+          if (error.status === 401) {
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          }
+          throw error;
+        })
       );
   }
 

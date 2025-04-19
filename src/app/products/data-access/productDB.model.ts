@@ -11,8 +11,8 @@ export interface ProductDB {
     shellId: number;
     inventoryStatus: 'INSTOCK' | 'LOWSTOCK' | 'OUTOFSTOCK';
     rating: number;
-    createdAt: number;
-    updatedAt: number;
+    createdAt?: number;
+    updatedAt?: number;
   }
 
   export function createEmptyProduct(): ProductDB {

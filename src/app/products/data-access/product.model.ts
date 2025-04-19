@@ -1,16 +1,6 @@
-export interface Product {
-  id: number;
-  code: string;
-  name: string;
-  description: string;
-  image: string;
-  category: string;
-  price: number;
-  quantity: number;
-  internalReference: string;
-  shellId: number;
-  inventoryStatus: "INSTOCK" | "LOWSTOCK" | "OUTOFSTOCK";
-  rating: number;
+import { ProductDB } from "./productDB.model";
+
+export interface Product extends Omit<ProductDB, 'createdAt'|'updatedAt'> {
   createdAt: number;
   updatedAt: number;
 }

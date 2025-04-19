@@ -45,22 +45,31 @@ export class ProductFormComponent {
       
       console.log('Submitting product:', this.formData);
   
-      this.productsService.create(this.formData).subscribe({
-        next: (createdProduct: ProductDB) => {
+      const operation = this.formData.id ? 
+        this.productsService.update(this.formData) : 
+        this.productsService.create(this.formData);
+  
+      operation.subscribe({
+        next: (savedProduct: ProductDB) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Succès',
-            detail: 'Produit créé avec succès'
+            detail: this.formData.id ? 
+              'Produit mis à jour avec succès' : 
+              'Produit créé avec succès'
           });
-          this.save.emit(createdProduct);
+          this.save.emit(savedProduct);
           this.loading = false;
         },
         error: (err) => {
-          console.error('Create product error:', err);
+          console.error('Save product error:', err);
           this.messageService.add({
             severity: 'error',
             summary: 'Erreur',
-            detail: err.error?.message || 'Erreur lors de la création du produit'
+            detail: err.error?.message || 
+              (this.formData.id ? 
+                'Erreur lors de la mise à jour du produit' : 
+                'Erreur lors de la création du produit')
           });
           this.loading = false;
         }
