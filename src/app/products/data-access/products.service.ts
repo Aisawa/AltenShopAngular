@@ -106,7 +106,9 @@ export class ProductsService {
   }
 
   public delete(id: number): Observable<boolean> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`).pipe(
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`, { 
+      headers: this.getAuthHeaders() 
+    }).pipe(
       map((response) => response.success),
       tap((success) => {
         if (success) {
@@ -115,7 +117,14 @@ export class ProductsService {
           );
         }
       }),
-      catchError((error) => this.handleError("delete", error, false))
+      catchError((error) => {
+        console.error('Delete error:', error);
+        if (error.status === 401) {
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        }
+        return this.handleError("delete", error, false);
+      })
     );
   }
 

@@ -6,10 +6,12 @@ import { Product } from "app/products/data-access/product.model";
 import { ProductDB } from "app/products/data-access/productDB.model";
 import { ProductsService } from "app/products/data-access/products.service";
 import { ProductFormComponent } from "app/products/ui/product-form/product-form.component";
+import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { DataViewModule } from "primeng/dataview";
 import { DialogModule } from "primeng/dialog";
+import { ToastModule } from "primeng/toast";
 
 const emptyProduct: Product = {
   id: 0,
@@ -42,6 +44,7 @@ const emptyProduct: Product = {
     DialogModule,
     ProductFormComponent,
     CommonModule,
+    ToastModule,
   ],
 })
 export class ProductListComponent implements OnInit {
@@ -55,6 +58,10 @@ export class ProductListComponent implements OnInit {
   public isCreation = false;
   //public readonly editedProduct = signal<Product>(emptyProduct);
   editedProduct: ProductDB | null = null;
+
+  constructor(
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.loadProducts();
@@ -75,7 +82,16 @@ export class ProductListComponent implements OnInit {
   }
 
   public onDelete(product: ProductDB) {
-    this.productsService.delete(product.id).subscribe();
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Confirmation',
+      detail: `Voulez-vous vraiment supprimer "${product.name}" ?`,
+      sticky: true,
+      key: 'confirm',
+      data: product,
+      closable: false,
+      life: 10000
+    });
   }
 
   public onSave(product: ProductDB) {
@@ -104,5 +120,34 @@ export class ProductListComponent implements OnInit {
     const isAdmin = this.authService.isAdmin();
     console.log('Is admin?', isAdmin, 'User email:', this.authService.currentUserValue?.email);
     return isAdmin;
+  }
+
+  confirmDelete(product: ProductDB) {
+    this.productsService.delete(product.id).subscribe({
+      next: (success) => {
+        if (success) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Produit supprimé avec succès'
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Delete error:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: err.error?.message || 'Erreur lors de la suppression du produit'
+        });
+      },
+      complete: () => {
+        this.clearConfirmMessage();
+      }
+    });
+  }
+
+  clearConfirmMessage() {
+    this.messageService.clear('confirm');
   }
 }

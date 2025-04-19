@@ -1,3 +1,28 @@
+<p-toast key="confirm" position="top-center">
+    <ng-template let-message pTemplate="message">
+      <div class="flex flex-column align-items-start" style="flex: 1">
+        <div class="flex align-items-center gap-2">
+          <span class="font-bold text-lg">{{message.summary}}</span>
+        </div>
+        <div class="font-medium text-sm my-2">{{message.detail}}</div>
+        <div class="flex gap-2 mt-2">
+          <p-button 
+            label="Oui" 
+            severity="danger" 
+            size="small" 
+            (onClick)="confirmDelete(message.data)">
+          </p-button>
+          <p-button 
+            label="Non" 
+            severity="secondary" 
+            size="small" 
+            (onClick)="clearConfirmMessage()">
+          </p-button>
+        </div>
+      </div>
+    </ng-template>
+  </p-toast>
+
 <h1 class="text-center">Liste des produits</h1>
 
 <p-button *ngIf="isAdmin" label="Créer produit" (onClick)="onCreate()" class="block text-center"/>
